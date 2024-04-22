@@ -1,0 +1,14 @@
+C:\Users\italo\OneDrive\Documentos\APS\Server\bin\Debug\net8.0-windows\Server.exe
+C:\Users\italo\OneDrive\Documentos\APS\Server\bin\Debug\net8.0-windows\Server.deps.json
+C:\Users\italo\OneDrive\Documentos\APS\Server\bin\Debug\net8.0-windows\Server.runtimeconfig.json
+C:\Users\italo\OneDrive\Documentos\APS\Server\bin\Debug\net8.0-windows\Server.dll
+C:\Users\italo\OneDrive\Documentos\APS\Server\bin\Debug\net8.0-windows\Server.pdb
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.AssemblyInfoInputs.cache
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.AssemblyInfo.cs
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.csproj.CoreCompileInputs.cache
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.dll
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\refint\Server.dll
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.pdb
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\Server.genruntimeconfig.cache
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Debug\net8.0-windows\ref\Server.dll

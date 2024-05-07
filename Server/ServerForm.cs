@@ -11,11 +11,11 @@ namespace SimpleServerGUI
 {
     public partial class ServerForm : Form
     {
-        private static Dictionary<string, TcpClient> connectedClients = new Dictionary<string, TcpClient>();
+        private static Dictionary<string, Socket> connectedClients = new Dictionary<string, Socket>();
         private static readonly object lockObject = new object();
         private BackgroundWorker serverWorker;
-        private TcpListener server;
-        private List<TcpClient> clientList = new List<TcpClient>();
+        private Socket server;
+        private List<Socket> clientList = new List<Socket>();
 
         public ServerForm()
         {
@@ -58,21 +58,21 @@ namespace SimpleServerGUI
             {
                 IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
                 int port = 8888;
-                server = new TcpListener(ipAddress, port);
-                server.Start();
+                server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                server.Bind(new IPEndPoint(ipAddress, port));
+                server.Listen(10);
                 LogMessage("Servidor iniciado. Aguardando conexões...");
 
                 while (true)
                 {
-                    TcpClient client = server.AcceptTcpClient();
+                    Socket client = server.Accept();
                     clientList.Add(client); // Adiciona o cliente à lista de clientes
 
                     LogMessage("Aguardando identificação do cliente...");
 
                     // Solicitar um identificador único ao cliente
-                    NetworkStream stream = client.GetStream();
                     byte[] buffer = new byte[1024];
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                    int bytesRead = client.Receive(buffer);
                     string clientId = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                     lock (lockObject)
@@ -92,17 +92,16 @@ namespace SimpleServerGUI
             }
         }
 
-        private void HandleClient(string clientId, TcpClient client)
+        private void HandleClient(string clientId, Socket client)
         {
             try
             {
                 LogMessage("(" + clientId + ") conectado.");
 
-                NetworkStream stream = client.GetStream();
                 while (true)
                 {
                     byte[] buffer = new byte[1024];
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                    int bytesRead = client.Receive(buffer);
                     string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                     if (string.IsNullOrEmpty(message))
@@ -138,12 +137,11 @@ namespace SimpleServerGUI
                 {
                     if (connectedClients.ContainsKey(receiverId))
                     {
-                        TcpClient receiverClient = connectedClients[receiverId];
+                        Socket receiverClient = connectedClients[receiverId];
                         if (receiverClient.Connected)
                         {
-                            NetworkStream stream = receiverClient.GetStream();
                             byte[] data = Encoding.ASCII.GetBytes(senderId + ": " + actualMessage);
-                            stream.Write(data, 0, data.Length);
+                            receiverClient.Send(data);
                         }
                         else
                         {
@@ -176,15 +174,15 @@ namespace SimpleServerGUI
 
         private void StopServerButton_Click(object sender, EventArgs e)
         {
-            if (server != null && server.Server.IsBound)
+            if (server != null && server.IsBound)
             {
                 // Desconectar todos os clientes antes de parar o servidor
-                foreach (TcpClient client in clientList)
+                foreach (Socket client in clientList)
                 {
                     client.Close();
                 }
 
-                server.Stop();
+                server.Close();
                 LogMessage("Servidor desligado.");
             }
         }

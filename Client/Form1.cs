@@ -8,8 +8,7 @@ namespace ChatApp
 {
     public partial class Form1 : Form
     {
-        private TcpClient client;
-        private NetworkStream stream;
+        private Socket client;
         private string clientId;
 
         public Form1()
@@ -26,8 +25,8 @@ namespace ChatApp
         {
             try
             {
-                client = new TcpClient("127.0.0.1", 8888);
-                stream = client.GetStream();
+                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                client.Connect("127.0.0.1", 8888);
                 MessageBox.Show("Conectado ao servidor.");
 
                 clientId = Prompt.ShowDialog("Digite seu nome de usuário:", "Identificação");
@@ -37,7 +36,7 @@ namespace ChatApp
                     clientId = Prompt.ShowDialog("Digite seu nome de usuário:", "Identificação");
                 }
                 byte[] idData = Encoding.ASCII.GetBytes(clientId);
-                stream.Write(idData, 0, idData.Length);
+                client.Send(idData);
 
                 Thread receiveThread = new Thread(ReceiveMessages);
                 receiveThread.Start();
@@ -55,7 +54,7 @@ namespace ChatApp
                 byte[] buffer = new byte[1024];
                 while (true)
                 {
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                    int bytesRead = client.Receive(buffer);
                     string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     AddMessageToChat(message);
                 }
@@ -84,7 +83,7 @@ namespace ChatApp
                 string receiverId = receiverTextBox.Text.Trim();
                 string fullMessage = receiverId + "|" + message;
                 byte[] data = Encoding.ASCII.GetBytes(fullMessage);
-                stream.Write(data, 0, data.Length);
+                client.Send(data);
                 messageTextBox.Clear();
             }
         }
@@ -93,7 +92,7 @@ namespace ChatApp
         {
             try
             {
-                stream?.Close();
+                client?.Shutdown(SocketShutdown.Both);
                 client?.Close();
             }
             catch (Exception ex)

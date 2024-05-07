@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "7B5RXDKiCnQiPRxZ5AIhcRQ+KD4dCZIH0ajubGlaljaNy3mKhCLvI6A2yb24pDxNTBRv3+mYw5JnZbfDH+O8iQ==",
+  "dgSpecHash": "mf0KYPuRocN+bNwRdJoIwHencd4lr1P15P8iFn4OHOGmwnASDguuT3yPf+p8B091+CfGFRxm8zdNU4Rn07Yrsg==",
   "success": true,
   "projectFilePath": "C:\\Users\\italo\\OneDrive\\Documentos\\APS\\Client\\Client.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\italo\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.4\\microsoft.netcore.app.runtime.win-x64.8.0.4.nupkg.sha512",
+    "C:\\Users\\italo\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.4\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.4.nupkg.sha512",
+    "C:\\Users\\italo\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.4\\microsoft.aspnetcore.app.runtime.win-x64.8.0.4.nupkg.sha512"
+  ],
   "logs": []
 }

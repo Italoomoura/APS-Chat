@@ -472,3 +472,4 @@ C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Release\net8.0-windows\win-x64
 C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Release\net8.0-windows\win-x64\Server.pdb
 C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Release\net8.0-windows\win-x64\Server.genruntimeconfig.cache
 C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Release\net8.0-windows\win-x64\ref\Server.dll
+C:\Users\italo\OneDrive\Documentos\APS\Server\obj\Release\net8.0-windows\win-x64\Server.sourcelink.json

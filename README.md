@@ -14,7 +14,7 @@ Client é uma aplicação de chat que permite aos usuários enviar mensagens par
     ```
 
 3. **Compilando e Executando:**
-    - Abra o terminal e navegue até o diretório do projeto.
+    - Abra o terminal e navegue até o diretório do projeto e execute:
 
     ```
     dotnet run --project Client
@@ -45,7 +45,7 @@ Aplicação de servidor simples que permite aos clientes se conectarem e trocare
     ```
 
 3. **Compilando e Executando:**
-    - Abra o terminal e navegue até o diretório do projeto.
+    - Abra o terminal e navegue até o diretório do projeto e execute:
 
     ```
     dotnet run --project Server

@@ -6,6 +6,7 @@
         private System.Windows.Forms.TextBox messageTextBox;
         private System.Windows.Forms.TextBox receiverTextBox;
         private System.Windows.Forms.Button sendMessageButton;
+        private System.Windows.Forms.Button sendFileButton;
         private System.Windows.Forms.RichTextBox chatBox;
         private System.Windows.Forms.Label messageLabel;
         private System.Windows.Forms.Label receiverLabel;
@@ -17,6 +18,7 @@
             this.messageTextBox = new System.Windows.Forms.TextBox();
             this.receiverTextBox = new System.Windows.Forms.TextBox();
             this.sendMessageButton = new System.Windows.Forms.Button();
+            this.sendFileButton = new System.Windows.Forms.Button();
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.receiverLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -32,7 +34,7 @@
             // 
             this.receiverTextBox.Location = new System.Drawing.Point(81, 12);
             this.receiverTextBox.Name = "receiverTextBox";
-            this.receiverTextBox.Size = new System.Drawing.Size(223, 13);
+            this.receiverTextBox.Size = new System.Drawing.Size(223, 20);
             this.receiverTextBox.TabIndex = 1;
             // 
             // sendMessageButton
@@ -44,6 +46,16 @@
             this.sendMessageButton.Text = "Enviar";
             this.sendMessageButton.UseVisualStyleBackColor = true;
             this.sendMessageButton.Click += new System.EventHandler(this.sendMessageButton_Click);
+            // 
+            // sendFileButton
+            // 
+            this.sendFileButton.Location = new System.Drawing.Point(100, 366);
+            this.sendFileButton.Name = "sendFileButton";
+            this.sendFileButton.Size = new System.Drawing.Size(105, 23);
+            this.sendFileButton.TabIndex = 6;
+            this.sendFileButton.Text = "Enviar Arquivo";
+            this.sendFileButton.UseVisualStyleBackColor = true;
+            this.sendFileButton.Click += new System.EventHandler(this.sendFileButton_Click);
             // 
             // chatBox
             // 
@@ -59,7 +71,7 @@
             this.receiverLabel.AutoSize = true;
             this.receiverLabel.Location = new System.Drawing.Point(12, 12);
             this.receiverLabel.Name = "receiverLabel";
-            this.receiverLabel.Size = new System.Drawing.Size(69, 13);
+            this.receiverLabel.Size = new System.Drawing.Size(63, 13);
             this.receiverLabel.TabIndex = 5;
             this.receiverLabel.Text = "Destinatário:";
             // 
@@ -70,6 +82,7 @@
             this.ClientSize = new System.Drawing.Size(316, 401);
             this.Controls.Add(this.receiverLabel);
             this.Controls.Add(this.chatBox);
+            this.Controls.Add(this.sendFileButton);
             this.Controls.Add(this.sendMessageButton);
             this.Controls.Add(this.receiverTextBox);
             this.Controls.Add(this.messageTextBox);

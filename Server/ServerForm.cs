@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.IO;
 
 namespace SimpleServerGUI
 {
@@ -102,9 +103,7 @@ namespace SimpleServerGUI
                 {
                     byte[] buffer = new byte[1024];
                     int bytesRead = client.Receive(buffer);
-                    string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-
-                    if (string.IsNullOrEmpty(message))
+                    if (bytesRead == 0)
                     {
                         lock (lockObject)
                         {
@@ -115,8 +114,34 @@ namespace SimpleServerGUI
                         break;
                     }
 
-                    // Encaminhar a mensagem para o(s) destinatário(s) correto(s)
-                    SendMessage(clientId, message);
+                    string messageHeader = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string[] headerParts = messageHeader.Split('|');
+
+                    if (headerParts[0] == "FILE")
+                    {
+                        string receiverId = headerParts[1];
+                        string fileName = headerParts[2];
+                        int fileSize = int.Parse(headerParts[3]);
+
+                        byte[] fileBuffer = new byte[fileSize];
+                        int totalBytesReceived = 0;
+
+                        while (totalBytesReceived < fileSize)
+                        {
+                            bytesRead = client.Receive(fileBuffer, totalBytesReceived, fileSize - totalBytesReceived, SocketFlags.None);
+                            totalBytesReceived += bytesRead;
+                        }
+
+                        // Encaminhar o arquivo para o destinatário
+                        SendFile(receiverId, fileName, fileBuffer);
+                    }
+                    else
+                    {
+                        string receiverId = headerParts[0];
+                        string actualMessage = headerParts[1];
+                        // Encaminhar a mensagem para o(s) destinatário(s) correto(s)
+                        SendMessage(clientId, receiverId, actualMessage);
+                    }
                 }
             }
             catch (Exception ex)
@@ -125,14 +150,10 @@ namespace SimpleServerGUI
             }
         }
 
-        private void SendMessage(string senderId, string message)
+        private void SendMessage(string senderId, string receiverId, string message)
         {
             try
             {
-                string[] parts = message.Split('|');
-                string receiverId = parts[0];
-                string actualMessage = parts[1];
-
                 lock (lockObject)
                 {
                     if (connectedClients.ContainsKey(receiverId))
@@ -140,7 +161,7 @@ namespace SimpleServerGUI
                         Socket receiverClient = connectedClients[receiverId];
                         if (receiverClient.Connected)
                         {
-                            byte[] data = Encoding.ASCII.GetBytes(senderId + ": " + actualMessage);
+                            byte[] data = Encoding.ASCII.GetBytes(senderId + ": " + message);
                             receiverClient.Send(data);
                         }
                         else
@@ -157,7 +178,44 @@ namespace SimpleServerGUI
             }
             catch (Exception ex)
             {
-                LogMessage("Erro ao enviar mensagem para o cliente " + senderId + ": " + ex.Message);
+                LogMessage("Erro ao enviar mensagem para o cliente " + receiverId + ": " + ex.Message);
+            }
+        }
+
+        private void SendFile(string receiverId, string fileName, byte[] fileData)
+        {
+            try
+            {
+                lock (lockObject)
+                {
+                    if (connectedClients.ContainsKey(receiverId))
+                    {
+                        Socket receiverClient = connectedClients[receiverId];
+                        if (receiverClient.Connected)
+                        {
+                            // Enviar o cabeçalho do arquivo
+                            string header = $"FILE|{fileName}|{fileData.Length}";
+                            byte[] headerBytes = Encoding.ASCII.GetBytes(header);
+                            receiverClient.Send(headerBytes);
+
+                            // Enviar os dados do arquivo
+                            receiverClient.Send(fileData);
+                        }
+                        else
+                        {
+                            LogMessage("O cliente '" + receiverId + "' está desconectado.");
+                            connectedClients.Remove(receiverId);
+                        }
+                    }
+                    else
+                    {
+                        LogMessage("O cliente '" + receiverId + "' não está conectado.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage("Erro ao enviar arquivo para o cliente " + receiverId + ": " + ex.Message);
             }
         }
 

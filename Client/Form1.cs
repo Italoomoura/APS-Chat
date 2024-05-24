@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ChatApp
 {
@@ -55,14 +56,53 @@ namespace ChatApp
                 while (true)
                 {
                     int bytesRead = client.Receive(buffer);
-                    string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                    AddMessageToChat(message);
+                    string messageHeader = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string[] headerParts = messageHeader.Split('|');
+
+                    if (headerParts[0] == "FILE")
+                    {
+                        string fileName = headerParts[1];
+                        int fileSize = int.Parse(headerParts[2]);
+
+                        byte[] fileBuffer = new byte[fileSize];
+                        int totalBytesReceived = 0;
+
+                        while (totalBytesReceived < fileSize)
+                        {
+                            bytesRead = client.Receive(fileBuffer, totalBytesReceived, fileSize - totalBytesReceived, SocketFlags.None);
+                            totalBytesReceived += bytesRead;
+                        }
+
+                        SaveFile(fileName, fileBuffer);
+                    }
+                    else
+                    {
+                        AddMessageToChat(messageHeader);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao receber mensagens do servidor: " + ex.Message);
             }
+        }
+
+        private void SaveFile(string fileName, byte[] fileData)
+        {
+            Invoke(new Action(() =>
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    FileName = fileName,
+                    Filter = "All Files (*.*)|*.*"
+                };
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllBytes(saveFileDialog.FileName, fileData);
+                    MessageBox.Show("Arquivo recebido e salvo com sucesso.");
+                    AddMessageToChat("Você recebeu o arquivo (" + fileName +")");
+                }
+            }));
         }
 
         private void AddMessageToChat(string message)
@@ -86,6 +126,25 @@ namespace ChatApp
                 client.Send(data);
                 AddMessageToChat("Você: " + message);
                 messageTextBox.Clear();
+            }
+        }
+
+        private void sendFileButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string receiverId = receiverTextBox.Text.Trim();
+                string fileName = Path.GetFileName(openFileDialog.FileName);
+                byte[] fileData = File.ReadAllBytes(openFileDialog.FileName);
+                int fileSize = fileData.Length;
+
+                string header = $"FILE|{receiverId}|{fileName}|{fileSize}";
+                byte[] headerData = Encoding.ASCII.GetBytes(header);
+                client.Send(headerData);
+
+                client.Send(fileData);
+                AddMessageToChat("Você enviou o arquivo (" + fileName +")");
             }
         }
 

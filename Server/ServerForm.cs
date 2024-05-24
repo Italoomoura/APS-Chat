@@ -57,7 +57,7 @@ namespace SimpleServerGUI
         {
             try
             {
-                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                IPAddress ipAddress = IPAddress.Parse("26.29.146.215");
                 int port = 8888;
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 server.Bind(new IPEndPoint(ipAddress, port));

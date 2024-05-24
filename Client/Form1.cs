@@ -84,6 +84,7 @@ namespace ChatApp
                 string fullMessage = receiverId + "|" + message;
                 byte[] data = Encoding.ASCII.GetBytes(fullMessage);
                 client.Send(data);
+                AddMessageToChat("Você: " + message);
                 messageTextBox.Clear();
             }
         }

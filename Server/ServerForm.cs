@@ -57,7 +57,7 @@ namespace SimpleServerGUI
         {
             try
             {
-                IPAddress ipAddress = IPAddress.Parse("26.29.146.215");
+                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
                 int port = 8888;
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 server.Bind(new IPEndPoint(ipAddress, port));
@@ -74,7 +74,7 @@ namespace SimpleServerGUI
                     // Solicitar um identificador único ao cliente
                     byte[] buffer = new byte[1024];
                     int bytesRead = client.Receive(buffer);
-                    string clientId = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string clientId = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
                     lock (lockObject)
                     {
@@ -114,7 +114,7 @@ namespace SimpleServerGUI
                         break;
                     }
 
-                    string messageHeader = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string messageHeader = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     string[] headerParts = messageHeader.Split('|');
 
                     if (headerParts[0] == "FILE")
@@ -161,7 +161,7 @@ namespace SimpleServerGUI
                         Socket receiverClient = connectedClients[receiverId];
                         if (receiverClient.Connected)
                         {
-                            byte[] data = Encoding.ASCII.GetBytes(senderId + ": " + message);
+                            byte[] data = Encoding.UTF8.GetBytes(senderId + ": " + message);
                             receiverClient.Send(data);
                         }
                         else
@@ -195,7 +195,7 @@ namespace SimpleServerGUI
                         {
                             // Enviar o cabeçalho do arquivo
                             string header = $"FILE|{fileName}|{fileData.Length}";
-                            byte[] headerBytes = Encoding.ASCII.GetBytes(header);
+                            byte[] headerBytes = Encoding.UTF8.GetBytes(header);
                             receiverClient.Send(headerBytes);
 
                             // Enviar os dados do arquivo

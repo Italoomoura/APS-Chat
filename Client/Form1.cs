@@ -27,7 +27,7 @@ namespace ChatApp
             try
             {
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                client.Connect("26.29.146.215", 8888);
+                client.Connect("127.0.0.1", 8888);
                 MessageBox.Show("Conectado ao servidor.");
 
                 clientId = Prompt.ShowDialog("Digite seu nome de usuário:", "Identificação");
@@ -36,7 +36,7 @@ namespace ChatApp
                     MessageBox.Show("O nome de usuário não pode estar vazio ou conter apenas espaços em branco. Por favor, tente novamente.");
                     clientId = Prompt.ShowDialog("Digite seu nome de usuário:", "Identificação");
                 }
-                byte[] idData = Encoding.ASCII.GetBytes(clientId);
+                byte[] idData = Encoding.UTF8.GetBytes(clientId);
                 client.Send(idData);
 
                 Thread receiveThread = new Thread(ReceiveMessages);
@@ -56,7 +56,7 @@ namespace ChatApp
                 while (true)
                 {
                     int bytesRead = client.Receive(buffer);
-                    string messageHeader = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string messageHeader = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     string[] headerParts = messageHeader.Split('|');
 
                     if (headerParts[0] == "FILE")
@@ -122,7 +122,7 @@ namespace ChatApp
             {
                 string receiverId = receiverTextBox.Text.Trim();
                 string fullMessage = receiverId + "|" + message;
-                byte[] data = Encoding.ASCII.GetBytes(fullMessage);
+                byte[] data = Encoding.UTF8.GetBytes(fullMessage);
                 client.Send(data);
                 AddMessageToChat("Você: " + message);
                 messageTextBox.Clear();
@@ -140,7 +140,7 @@ namespace ChatApp
                 int fileSize = fileData.Length;
 
                 string header = $"FILE|{receiverId}|{fileName}|{fileSize}";
-                byte[] headerData = Encoding.ASCII.GetBytes(header);
+                byte[] headerData = Encoding.UTF8.GetBytes(header);
                 client.Send(headerData);
 
                 client.Send(fileData);

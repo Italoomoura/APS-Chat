@@ -27,7 +27,7 @@ namespace ChatApp
             try
             {
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                client.Connect("127.0.0.1", 8888);
+                client.Connect("26.29.146.215", 8888);
                 MessageBox.Show("Conectado ao servidor.");
 
                 clientId = Prompt.ShowDialog("Digite seu nome de usuário:", "Identificação");
